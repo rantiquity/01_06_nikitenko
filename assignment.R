@@ -18,7 +18,7 @@ if (!dir.exists("letters")) {
   unzip("letters.zip")
 }
 
-my_xmls <- list.files(path = "C:/Users/skv0r/Documents/R-Workflow/letters", full.names = TRUE) |> 
+my_xmls <- list.files(path = "letters", pattern = "\\.xml$", full.names = TRUE) |> 
   map(read_xml)
 
 # пишем код для одного письма
