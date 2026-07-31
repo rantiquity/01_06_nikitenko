@@ -18,28 +18,51 @@ if (!dir.exists("letters")) {
   unzip("letters.zip")
 }
 
-my_xmls <- # ваш код здесь 
+my_xmls <- list.files(path = "C:/Users/skv0r/Documents/R-Workflow/letters", full.names = TRUE) |> 
+  map(read_xml)
 
 # пишем код для одного письма
 test_xml <- my_xmls[1]
-doc <- # ваш код здесь 
-ns <- # ваш код здесь 
+doc <- test_xml[[1]] 
+ns <- xml_ns(doc) 
 
 # дата письма
-date <- # ваш код здесь 
+date <- xml_find_first(doc, ".//d1:correspAction[@type='sending']/d1:date/@when", ns=ns) |> 
+    xml_text() |> 
+    trimws()
 
 # адресат письма
-corresp <- # ваш код здесь 
+corresp <- xml_find_first(doc, ".//d1:correspAction[@type='receiving']/d1:persName", ns=ns) |> 
+    xml_text() |> 
+    trimws()
 
 # том 
 
-vol <- # ваш код здесь 
+vol <- xml_find_first(doc, ".//d1:biblScope[@unit='vol']", ns=ns) |> 
+    xml_text() |> 
+    trimws() 
 
 ### ---------------------------###
 ## теперь оборачиваем в функцию
 read_letter <- function(xml_path) {
 
-  # ваш код здесь 
+  ns <- xml_ns(xml_path) 
+  
+  # дата письма
+  date <- xml_find_first(xml_path, ".//d1:correspAction[@type='sending']/d1:date/@when", ns=ns) |> 
+    xml_text() |> 
+    trimws()
+  
+  # адресат письма
+  corresp <- xml_find_first(xml_path, ".//d1:correspAction[@type='receiving']/d1:persName", ns=ns) |> 
+    xml_text() |> 
+    trimws()
+  
+  # том 
+  
+  vol <- xml_find_first(xml_path, ".//d1:biblScope[@unit='vol']", ns=ns) |> 
+    xml_text() |> 
+    trimws()
   
   # записываем в тиббл
   res <- tibble(
